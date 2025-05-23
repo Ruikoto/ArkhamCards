@@ -67,14 +67,12 @@ export function drawWeakness(
   realTraits: boolean
 ): Card | undefined {
   const uniqueCards = matchingWeaknesses(investigator, set, allWeaknesses, criteria, realTraits);
-  const cards = (
-    flatMap(
-      uniqueCards,
-      card => {
-        return map(
-          range(0, (card.quantity || 0) - (set.assignedCards[card.code] || 0)),
-          () => card);
-      }));
+
+  // 只使用每种弱点的一个副本，不根据数量重复添加
+  const cards = uniqueCards.filter(card =>
+    (card.quantity || 0) - (set.assignedCards[card.code] || 0) > 0
+  );
+
   if (cards.length < 2) {
     return head(cards);
   }
